@@ -68,7 +68,10 @@ class RouteCollector
         array $methods = null,
         string $name = null
     ) : Route {
-        $this->checkForDuplicateRoute($path, $methods);
+        // will be much faster if we don't check for duplicates in production environment..
+        if (getenv('APP_ENV') !== 'prod') {
+            $this->checkForDuplicateRoute($path, $methods);
+        }
 
         $methods = null === $methods ? Route::HTTP_METHOD_ANY : $methods;
         $route   = new Route($path, $middleware, $methods, $name);
